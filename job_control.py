@@ -120,12 +120,12 @@ class DFTjob(object):
         p = self.path
 
         # POSCAR setup
-        if self.conf_lst.index(conf) == 0: # if still on relax
-            if os.path.exists(os.path.join(self.path,conf+'_bk')): # if there is a backup file (if this is a restart)
+        if self.conf_lst.index(conf) == 0: #if still on relax
+            if os.path.exists(os.path.join(self.path,conf+'_bk')): #if there is a backup file (if this is a restart)
                 backup_count = 2
-                while os.path.exists(os.path.join(self.path,conf+'_bk_'+str(backup_count))): # finds most recent backup (higher # = more recent)
+                while os.path.exists(os.path.join(self.path,conf+'_bk_'+str(backup_count))): #finds most recent backup (higher # = more recent)
                     backup_count += 1
-                if os.path.exists(os.path.join(self.path,conf+'_bk_'+str(backup_count-1))): # checks if there are multiple backups
+                if os.path.exists(os.path.join(self.path,conf+'_bk_'+str(backup_count-1))): #checks if there are multiple backups
                     path_to_contcar = os.path.join(self.path,conf+'_bk_'+str(backup_count-1))
                 else: path_to_contcar = os.path.join(self.path,conf+'_bk')
                 try:
@@ -207,22 +207,30 @@ class DFTjob(object):
         with open(self.global_path+'/static_files/auto.q', 'r') as f:
             text = f.read()
         name = self.name
+        #queuetype = kwargs.get('queuetype', 'short')
         nodes = kwargs.get('nodes', 4)
         ntasks = kwargs.get('ntasks', 32)
         key = kwargs.get('key', personal_alloc)
+        memory = kwargs.get('memory', 1)
+        print("conf: ", conf)
         if 'rlx' in conf:
-            queuetype = kwargs.get('queuetype','Normal')
+	    #print('Relaxation')
+            queuetype = kwargs.get('queuetype','normal')
             walltime = kwargs.get('walltime', '24:00:00')
+            memory = kwargs.get('memory','2')
         elif 'stc' in conf:
             queuetype = kwargs.get('queuetype','short')
             walltime = kwargs.get('walltime', '4:00:00')
+            memory = kwargs.get('memory','1')
 
+	#print("passed if else statement")
         qfile = text.format(nodes=nodes, 
                             ntasks=ntasks,
                             name=name,
                             queuetype=queuetype,
                             key=key,
-                            walltime=walltime)
+                            walltime=walltime,
+                            memory=memory)
 
         with open('auto.q', 'w') as f:
             f.write(qfile)
@@ -347,7 +355,7 @@ class DFTjob(object):
             shutil.rmtree(self.path) # Remove the files 
 
 if __name__ == "__main__":
-    poscars = glob.glob('poscars/POSCAR*')
+    poscars = glob.glob('poscars/POSCAR*') #used to be: poscars/POSCAR*
     os.system('squeue -u ' + USER_name + ' > current_running')
     submit_tag = True
     ans = input("Submit jobs? <YES> or others:")
@@ -362,10 +370,16 @@ if __name__ == "__main__":
     # Get kwargs from kwargs.json file
     with open('kwargs.json', 'r') as kj:
         kwargs = json.load(kj)
+	#print('kwargs.json opened and loaded')
     with open('log.txt', 'w+') as f:
         sys.stdout = f   
+        #counter = 0
+	#print('log.txt opened')
         for p in poscars:
-            # Create DFT task object, conf list can include as many rlx steps as desired
+            print('poscar: ', p)
+            #if counter == 2: break
+            #counter +=1
+            # Create DFT task object
             d = DFTjob(p, conf_lst=['rlx', 'rlx2', 'stc'])
 
             # Kwargs for this DFT task
@@ -385,9 +399,11 @@ if __name__ == "__main__":
                 key: personal_alloc             # personal allocation on quest
                 walltime: '2:00:00'             # walltime: '2:00:00' for relaxation, '0:30:00' for static 
                 ifspin: 'auto'                  # whether spin polarization is considered ('auto', 'yes', 'no')
+		memory: 1			# amount of memory requested per node in GB
             """
             # Whether or not to submit the job right away
             d.submit = submit_tag
 
             # Create input files 
             d.setup(**kwargs)
+	    #print('DFT job created')
