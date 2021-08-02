@@ -2,11 +2,16 @@
 
 #SBATCH -N {nodes}
 #SBATCH -n {ntasks}
+#SBATCH --mem=0
+##SBATCH --mem-per-cpu={memory}G
 #SBATCH -p {queuetype}
+#SBATCH --requeue
 #SBATCH -J {name}
 #SBATCH -t {walltime}
 #SBATCH -A {key}
 #SBATCH -o job.oe
+#SBATCH --mail-type=END,NONE,FAIL,REQUEUE
+#SBATCH --mail-user=esandraz@u.northwestern.edu
 
 #OpenMP settings:
 export OMP_NUM_THREADS=1
