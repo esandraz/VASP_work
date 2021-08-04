@@ -233,9 +233,11 @@ class DFTjob(object):
             queuetype = kwargs.get('queuetype','short')
             walltime = kwargs.get('walltime', '4:00:00')
             memory = kwargs.get('memory','1')
+            
         if debug:
-    	    print("passed if else statement")
+            print("passed if else statement")
             print(f"queuetype={queuetype}")
+        
         qfile = text.format(nodes=nodes, 
                             ntasks=ntasks,
                             name=name,
