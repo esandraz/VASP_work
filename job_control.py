@@ -222,16 +222,20 @@ class DFTjob(object):
         memory = kwargs.get('memory', 1)
         print("conf: ", conf)
         if 'rlx' in conf:
-	    #print('Relaxation')
+	        if debug:
+                print('Relaxation')
             queuetype = kwargs.get('queuetype','normal')
             walltime = kwargs.get('walltime', '24:00:00')
             memory = kwargs.get('memory','2')
         elif 'stc' in conf:
+            if debug:
+                print("stc")
             queuetype = kwargs.get('queuetype','short')
             walltime = kwargs.get('walltime', '4:00:00')
             memory = kwargs.get('memory','1')
-
-	#print("passed if else statement")
+        if debug:
+    	    print("passed if else statement")
+            print(f"queuetype={queuetype}")
         qfile = text.format(nodes=nodes, 
                             ntasks=ntasks,
                             name=name,
