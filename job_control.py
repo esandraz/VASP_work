@@ -7,6 +7,8 @@ import subprocess
 import glob
 import json
 
+debug = True
+
 ## Absolute path of your pot_dict.json file
 with open('static_files/pot_dict.json', 'r') as f:
     potdict = json.load(f)
@@ -120,6 +122,8 @@ class DFTjob(object):
         p = self.path
 
         # POSCAR setup
+        if debug:
+            print(f"self.conf_lst.index(conf) = {self.conf_lst.index(conf)}")
         if self.conf_lst.index(conf) == 0: #if still on relax
             if os.path.exists(os.path.join(self.path,conf+'_bk')): #if there is a backup file (if this is a restart)
                 backup_count = 2
@@ -141,11 +145,15 @@ class DFTjob(object):
                     shutil.copyfile(os.path.join(p, 'POSCAR'),
                                 os.path.join(cp, 'POSCAR'))
                 except:
+                    if debug:
+                        print("in except")
                     print("Not able to write POSCAR")
                     shutil.rmtree(cp)
                     return
 
         else:
+            if debug:
+                print("in else")
             index = self.conf_lst.index(conf) - 1
             pp = os.path.join(p, self.conf_lst[ index ])
             try:
