@@ -222,7 +222,7 @@ class DFTjob(object):
         memory = kwargs.get('memory', 1)
         print("conf: ", conf)
         if 'rlx' in conf:
-	        if debug:
+            if debug:
                 print('Relaxation')
             queuetype = kwargs.get('queuetype','normal')
             walltime = kwargs.get('walltime', '24:00:00')
