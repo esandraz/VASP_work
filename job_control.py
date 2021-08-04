@@ -398,7 +398,7 @@ if __name__ == "__main__":
             #if counter == 2: break
             #counter +=1
             # Create DFT task object
-            d = DFTjob(p, conf_lst=['rlx', 'rlx2', 'stc'])
+            d = DFTjob(p, path="poscars", conf_lst=['rlx', 'rlx2', 'stc'])
 
             # Kwargs for this DFT task
             """
