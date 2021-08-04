@@ -124,6 +124,9 @@ class DFTjob(object):
         # POSCAR setup
         if debug:
             print(f"self.conf_lst.index(conf) = {self.conf_lst.index(conf)}")
+            print(f"cp={cp}")
+            print(f"p={p}")
+            
         if self.conf_lst.index(conf) == 0: #if still on relax
             if os.path.exists(os.path.join(self.path,conf+'_bk')): #if there is a backup file (if this is a restart)
                 backup_count = 2
@@ -398,7 +401,7 @@ if __name__ == "__main__":
             #if counter == 2: break
             #counter +=1
             # Create DFT task object
-            d = DFTjob(p, path="poscars", conf_lst=['rlx', 'rlx2', 'stc'])
+            d = DFTjob(p, conf_lst=['rlx', 'rlx2', 'stc'])
 
             # Kwargs for this DFT task
             """
