@@ -144,9 +144,11 @@ class DFTjob(object):
                 try: 
                     shutil.copyfile(os.path.join(p, 'POSCAR'),
                                 os.path.join(cp, 'POSCAR'))
-                except:
+                except Exception as e:
                     if debug:
-                        print("in except")
+                        print("in except:")
+                        print(str(e))
+
                     print("Not able to write POSCAR")
                     shutil.rmtree(cp)
                     return
@@ -238,6 +240,8 @@ class DFTjob(object):
             print("passed if else statement")
             print(f"queuetype={queuetype}")
         
+
+
         qfile = text.format(nodes=nodes, 
                             ntasks=ntasks,
                             name=name,
